@@ -18,10 +18,9 @@ target/
 *.iws
 *.iml
 *.ipr
-/mvnw
-/mvnw.cmd
-.gitignore
 .mvn
+mvnw
+mvnw.cmd
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

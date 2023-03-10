@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackageClasses = UserController.class)
+
 public class VideoBlogAppSecurityJorgeApplication {
 
     public static void main(String[] args) {
