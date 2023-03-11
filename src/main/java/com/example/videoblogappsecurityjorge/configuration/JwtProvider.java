@@ -1,7 +1,7 @@
 package com.example.videoblogappsecurityjorge.configuration;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.videoblogappsecurityjorge.shared.Constants;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -18,17 +18,34 @@ public class JwtProvider {
         tokenValidityInSeconds = 60;
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username, String  apikey){
+        Claims claims = Jwts.claims();
+        claims.put("api-key",apikey);
 
-        return Jwts.builder().setSubject(username)
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + tokenValidityInSeconds * 1000))
                 .setIssuedAt(new Date())
                 .signWith(Keys.hmacShaKeyFor(signinKey), SignatureAlgorithm.HS256)
                 .compact();
     }
     public String getUsernameFromToken(String token){
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(signinKey))
-                .build().parseClaimsJws(token).getBody().getSubject();
+            return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(signinKey))
+                    .build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean validateJWT(String token){
+        try{
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(signinKey).build().parseClaimsJws(token);
+            return  ! claimsJws.getBody().getExpiration().before(new Date());
+        }catch (JwtExceptionPersonal e){
+            return false;
+        }
+
     }
 
 }
+
+
